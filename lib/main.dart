@@ -44,7 +44,7 @@ class _MainViewState extends State<MainView> {
 
   Future<List<Character>> getCharactersFromAPI() async {
     final url = Uri.parse(
-        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=20");
+        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=15");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final List result = json.decode(response.body);
@@ -63,15 +63,24 @@ class _MainViewState extends State<MainView> {
               future: getCharactersFromAPI(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                          title: Text(snapshot.data![index].gender.toString()));
-                    },
-                  );
+                  // return ListView.builder(
+                  //   scrollDirection: Axis.vertical,
+                  //   shrinkWrap: true,
+                  //   itemCount: snapshot.data!.length,
+                  //   itemBuilder: (context, index) {
+                  //     return ListTile(
+                  //         title: Text(snapshot.data![index].gender.toString()));
+                  //   },
+                  // );
+                  return GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      children: List.generate(snapshot.data!.length, (index) {
+                        return Center(
+                          child: Text(snapshot.data![index].gender.toString(),
+                              style: Theme.of(context).textTheme.headlineSmall),
+                        );
+                      }));
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
@@ -80,20 +89,3 @@ class _MainViewState extends State<MainView> {
     ]));
   }
 }
-          // ListView.builder(
-          //   itemCount: characters.length,
-          //   itemBuilder: (context, index) {
-          //     return ListTile(title: Text(characters[index].name));
-          //   },
-          //   shrinkWrap: true,
-          // ),
-          // GridView.count(
-          //   crossAxisCount: 2,
-          //   children: List.generate(100, (index) {
-          //     return Center(
-          //         child: Text(
-          //       'Item $index',
-          //       style: Theme.of(context).textTheme.headlineSmall,
-          //     ));
-          //   }),
-          // )

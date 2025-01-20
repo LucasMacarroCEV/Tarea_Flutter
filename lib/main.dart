@@ -1,54 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-
-class Character {
-  final String url, name, gender, culture, born, died, father, mother, spouse;
-  final List<String> titles,
-      aliases,
-      allegiances,
-      books,
-      povBooks,
-      tvSeries,
-      playedBy;
-
-  const Character({
-    required this.url,
-    required this.name,
-    required this.gender,
-    required this.culture,
-    required this.born,
-    required this.died,
-    required this.titles,
-    required this.aliases,
-    required this.father,
-    required this.mother,
-    required this.spouse,
-    required this.allegiances,
-    required this.books,
-    required this.povBooks,
-    required this.tvSeries,
-    required this.playedBy
-  });
-
-  factory Character.fromJson(Map<String, dynamic> json) {
-    return Character(
-    url: json['url'] as String, 
-    name: json['name'] as String, 
-    gender, 
-    culture, 
-    born, 
-    died, 
-    titles, 
-    aliases, 
-    father, 
-    mother, 
-    spouse, 
-    allegiances, 
-    books, 
-    povBooks, 
-    tvSeries, 
-    playedBy)
-  }
-}
+import 'character.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const FlutterTaskApp());
@@ -84,17 +38,55 @@ class _MainViewState extends State<MainView> {
   var characters = <Character>[];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<List<Character>> getCharactersFromAPI() async {
+    final url = Uri.parse(
+        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=20");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List result = json.decode(response.body);
+      return result.map((e) => Character.fromJson(e)).toList();
+    } else {
+      throw Exception('Error: No se pueo recibir la información de la API.');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          ListView.builder(
-            itemCount: characters.length,
-            itemBuilder: (context, index) {
-              return ListTile(title: Text(characters[index].name));
-            },
-            shrinkWrap: true,
-          ),
+        body: Column(children: [
+      Center(
+          child: FutureBuilder(
+              future: getCharactersFromAPI(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                          title: Text(snapshot.data![index].gender.toString()));
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return const CircularProgressIndicator();
+              }))
+    ]));
+  }
+}
+          // ListView.builder(
+          //   itemCount: characters.length,
+          //   itemBuilder: (context, index) {
+          //     return ListTile(title: Text(characters[index].name));
+          //   },
+          //   shrinkWrap: true,
+          // ),
           // GridView.count(
           //   crossAxisCount: 2,
           //   children: List.generate(100, (index) {
@@ -105,8 +97,3 @@ class _MainViewState extends State<MainView> {
           //     ));
           //   }),
           // )
-        ],
-      ),
-    );
-  }
-}

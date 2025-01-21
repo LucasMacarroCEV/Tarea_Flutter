@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'character.dart';
@@ -39,53 +40,84 @@ class _MainViewState extends State<MainView> {
 
   @override
   void initState() {
+    getRequest();
     super.initState();
   }
 
-  Future<List<Character>> getCharactersFromAPI() async {
-    final url = Uri.parse(
-        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=15");
-    final response = await http.get(url);
+  void getRequest() async {
+    final response = await http.get(Uri.parse(
+        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=30"));
     if (response.statusCode == 200) {
       final List result = json.decode(response.body);
-      return result.map((e) => Character.fromJson(e)).toList();
+      characters = result.map((e) => Character.fromJson(e)).toList();
     } else {
       throw Exception('Error: No se pueo recibir la información de la API.');
     }
+    setState(() {});
+  }
+
+  Character getRandomCharacter() {
+    return characters[Random().nextInt(characters.length)];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(children: [
-      Center(
-          child: FutureBuilder(
-              future: getCharactersFromAPI(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // return ListView.builder(
-                  //   scrollDirection: Axis.vertical,
-                  //   shrinkWrap: true,
-                  //   itemCount: snapshot.data!.length,
-                  //   itemBuilder: (context, index) {
-                  //     return ListTile(
-                  //         title: Text(snapshot.data![index].gender.toString()));
-                  //   },
-                  // );
-                  return GridView.count(
-                      crossAxisCount: 2,
-                      shrinkWrap: true,
-                      children: List.generate(snapshot.data!.length, (index) {
-                        return Center(
-                          child: Text(snapshot.data![index].gender.toString(),
-                              style: Theme.of(context).textTheme.headlineSmall),
-                        );
-                      }));
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return const CircularProgressIndicator();
+      body: SafeArea(
+        child: SingleChildScrollView(
+            child: Column(children: <Widget>[
+          GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              children: List.generate(characters.length, (index) {
+                return Card(
+                    color: Colors.blue,
+                    child: Center(
+                      child: Text(characters[index].gender.toString(),
+                          style: Theme.of(context).textTheme.headlineSmall),
+                    ));
               }))
-    ]));
+        ])),
+      ),
+    );
   }
 }
+
+
+
+//----------> Future Builder
+
+// Future<List<Character>> getCharactersFromAPI() async {
+//   final url = Uri.parse(
+//       "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=30");
+//   final response = await http.get(url);
+//   if (response.statusCode == 200) {
+//     final List result = json.decode(response.body);
+//     return characters = result.map((e) => Character.fromJson(e)).toList();
+//   } else {
+//     throw Exception('Error: No se pueo recibir la información de la API.');
+//   }
+// }
+
+// FutureBuilder(
+//     future: getCharactersFromAPI(),
+//     builder: (context, snapshot) {
+//       if (snapshot.hasData) {
+//         return GridView.count(
+//             crossAxisCount: 2,
+//             shrinkWrap: true,
+//             children: List.generate(characters.length, (index) {
+//               return Card(
+//                   color: Colors.blue,
+//                   child: Center(
+//                     child: Text(characters[index].gender.toString(),
+//                         style: Theme.of(context)
+//                             .textTheme
+//                             .headlineSmall),
+//                   ));
+//             }));
+//       } else if (snapshot.hasError) {
+//         return Text('${snapshot.error}');
+//       }
+//       return const CircularProgressIndicator();
+//     }),

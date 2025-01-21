@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Character {
   String? url, name, gender, culture, born, died, father, mother, spouse;
   // List<String>? titles,
@@ -66,6 +68,33 @@ class Character {
     //data['playedBy'] = playedBy;
     return data;
   }
+
+  String getNumber() {
+    if (url!.isNotEmpty) {
+      List<String>? characterUrlSplitted = url?.split("/");
+      return characterUrlSplitted!.last;
+    } else {
+      return "Error";
+    }
+  }
+
+  String getName() {
+    if (name!.isNotEmpty) {
+      return name!;
+    } else {
+      return "Desconocido";
+    }
+  }
+
+  IconData getGenderIcon() {
+    if (gender! == "Male") {
+      return Icons.male_rounded;
+    } else if (gender! == "Female") {
+      return Icons.female_rounded;
+    } else {
+      return Icons.question_answer_rounded;
+    }
+  }
 }
 
 // const Character(
@@ -85,7 +114,6 @@ class Character {
 //     required this.povBooks,
 //     required this.tvSeries,
 //     required this.playedBy});
-
 // factory Character.fromJson(Map<String, dynamic> json) {
 //   return Character(
 //       url: json['url'] as String,

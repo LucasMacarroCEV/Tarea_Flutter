@@ -1,14 +1,81 @@
 import 'package:flutter/material.dart';
 
+class House {
+  String icon;
+  Color primaryColor;
+  Color secondaryColor;
+  Color fontColor;
+
+  House(this.icon, this.primaryColor, this.secondaryColor, this.fontColor);
+}
+
+Map<String, House> housesMap = {
+  "None": House(
+      "assets/icons/32px-None.png",
+      const Color.fromRGBO(255, 255, 255, 1),
+      const Color.fromRGBO(195, 195, 195, 1),
+      const Color.fromRGBO(195, 195, 195, 1)),
+  "Arryn": House(
+      "assets/icons/32px-House_Arryn.png",
+      const Color.fromRGBO(231, 231, 232, 1),
+      const Color.fromRGBO(0, 128, 210, 1),
+      const Color.fromRGBO(0, 128, 210, 1)),
+  "Baratheon": House(
+      "assets/icons/32px-House_Baratheon.png",
+      const Color.fromRGBO(28, 29, 34, 1),
+      const Color.fromRGBO(245, 206, 62, 1),
+      const Color.fromRGBO(245, 206, 62, 1)),
+  "Greyjoy": House(
+      "assets/icons/32px-House_Greyjoy.png",
+      const Color.fromRGBO(245, 206, 62, 1),
+      const Color.fromRGBO(28, 29, 34, 1),
+      const Color.fromRGBO(28, 29, 34, 1)),
+  "Lannister": House(
+      "assets/icons/32px-House_Lannister.png",
+      const Color.fromRGBO(250, 197, 65, 1),
+      const Color.fromRGBO(199, 12, 27, 1),
+      const Color.fromRGBO(199, 12, 27, 1)),
+  "Martell": House(
+      "assets/icons/32px-House_Martell.png",
+      const Color.fromRGBO(221, 49, 55, 1),
+      const Color.fromRGBO(233, 116, 42, 1),
+      const Color.fromRGBO(233, 116, 42, 1)),
+  "Stark": House(
+      "assets/icons/32px-House_Stark.png",
+      const Color.fromRGBO(140, 140, 140, 1),
+      const Color.fromRGBO(241, 241, 241, 1),
+      const Color.fromRGBO(241, 241, 241, 1)),
+  "Targaryen": House(
+      "assets/icons/32px-House_Targaryen.png",
+      const Color.fromRGBO(179, 34, 39, 1),
+      const Color.fromRGBO(14, 14, 14, 1),
+      const Color.fromRGBO(14, 14, 14, 1)),
+  "Tully": House(
+      "assets/icons/32px-House_Tully.png",
+      const Color.fromRGBO(206, 206, 206, 1),
+      const Color.fromRGBO(0, 35, 172, 1),
+      const Color.fromRGBO(0, 35, 172, 1)),
+  "Tyrell": House(
+      "assets/icons/32px-House_Tyrell.png",
+      const Color.fromRGBO(243, 240, 139, 1),
+      const Color.fromRGBO(0, 128, 37, 1),
+      const Color.fromRGBO(0, 128, 37, 1)),
+  "Hightower": House(
+      "assets/icons/32px-House_Hightower.png",
+      const Color.fromRGBO(227, 227, 227, 1),
+      const Color.fromRGBO(255, 124, 57, 1),
+      const Color.fromRGBO(255, 124, 57, 1))
+};
+
 class Character {
   String? url, name, gender, culture, born, died, father, mother, spouse;
-  // List<String>? titles,
-  //     aliases,
-  //     allegiances,
-  //     books,
-  //     povBooks,
-  //     tvSeries,
-  //     playedBy;
+  List<dynamic>? titles,
+      aliases,
+      allegiances,
+      books,
+      povBooks,
+      tvSeries,
+      playedBy;
 
   Character({
     this.url,
@@ -17,16 +84,16 @@ class Character {
     this.culture,
     this.born,
     this.died,
-    //this.titles,
-    //this.aliases,
+    this.titles,
+    this.aliases,
     this.father,
     this.mother,
     this.spouse,
-    //this.allegiances,
-    //this.books,
-    //this.povBooks,
-    //this.tvSeries,
-    //this.playedBy,
+    this.allegiances,
+    this.books,
+    this.povBooks,
+    this.tvSeries,
+    this.playedBy,
   });
 
   Character.fromJson(Map<String, dynamic> json) {
@@ -36,16 +103,16 @@ class Character {
     culture = json['culture'];
     born = json['born'];
     died = json['died'];
-    //titles = json['titles'];
-    //aliases = json['aliases'];
+    titles = json['titles'];
+    aliases = json['aliases'];
     father = json['father'];
     mother = json['mother'];
     spouse = json['spouse'];
-    //allegiances = json['allegiances'];
-    //books = json['books'];
-    //povBooks = json['povBooks'];
-    //tvSeries = json['tvSeries'];
-    //playedBy = json['playedBy'];
+    allegiances = json['allegiances'];
+    books = json['books'];
+    povBooks = json['povBooks'];
+    tvSeries = json['tvSeries'];
+    playedBy = json['playedBy'];
   }
 
   Map<String, dynamic> toJson() {
@@ -56,16 +123,16 @@ class Character {
     data['culture'] = culture;
     data['born'] = born;
     data['died'] = died;
-    //data['titles'] = titles;
-    //data['aliases'] = aliases;
+    data['titles'] = titles;
+    data['aliases'] = aliases;
     data['father'] = father;
     data['mother'] = mother;
     data['spouse'] = spouse;
-    //data['allegiances'] = allegiances;
-    //data['books'] = books;
-    //data['povBooks'] = povBooks;
-    //data['tvSeries'] = tvSeries;
-    //data['playedBy'] = playedBy;
+    data['allegiances'] = allegiances;
+    data['books'] = books;
+    data['povBooks'] = povBooks;
+    data['tvSeries'] = tvSeries;
+    data['playedBy'] = playedBy;
     return data;
   }
 
@@ -95,41 +162,52 @@ class Character {
       return Icons.question_answer_rounded;
     }
   }
-}
 
-// const Character(
-//     {required this.url,
-//     required this.name,
-//     required this.gender,
-//     required this.culture,
-//     required this.born,
-//     required this.died,
-//     required this.titles,
-//     required this.aliases,
-//     required this.father,
-//     required this.mother,
-//     required this.spouse,
-//     required this.allegiances,
-//     required this.books,
-//     required this.povBooks,
-//     required this.tvSeries,
-//     required this.playedBy});
-// factory Character.fromJson(Map<String, dynamic> json) {
-//   return Character(
-//       url: json['url'] as String,
-//       name: json['name'] as String,
-//       gender: json['gender'] as String,
-//       culture: json['culture'] as String,
-//       born: json['born'] as String,
-//       died: json['died'] as String,
-//       titles: json['titles'] as List<String>,
-//       aliases: json['aliases'] as List<String>,
-//       father: json['father'] as String,
-//       mother: json['mother'] as String,
-//       spouse: json['spouse'] as String,
-//       allegiances: json['allegiances'] as List<String>,
-//       books: json['books'] as List<String>,
-//       povBooks: json['povBooks'] as List<String>,
-//       tvSeries: json['tvSeries'] as List<String>,
-//       playedBy: json['playedBy'] as List<String>);
-// }
+  String getHouseIcon() {
+    String houseIcon = "assets/icons/32px-None.png";
+    if (name!.isNotEmpty) {
+      name!.split(" ").forEach((word) {
+        if (housesMap.containsKey(word)) {
+          houseIcon = housesMap[word]!.icon;
+        }
+      });
+    }
+    return houseIcon;
+  }
+
+  Color getHousePrimaryColor() {
+    Color primaryColor = housesMap["None"]!.primaryColor;
+    if (name!.isNotEmpty) {
+      name!.split(" ").forEach((word) {
+        if (housesMap.containsKey(word)) {
+          primaryColor = housesMap[word]!.primaryColor;
+        }
+      });
+    }
+    return primaryColor;
+  }
+
+  Color getHouseSecondaryColor() {
+    Color secondaryColor = housesMap["None"]!.secondaryColor;
+    if (name!.isNotEmpty) {
+      name!.split(" ").forEach((word) {
+        if (housesMap.containsKey(word)) {
+          secondaryColor = housesMap[word]!.secondaryColor;
+        }
+      });
+    }
+    return secondaryColor;
+  }
+
+  Color getHouseFontColor() {
+    Color fontColor = housesMap["None"]!.fontColor;
+    if (name!.isNotEmpty) {
+      name!.split(" ").forEach((word) {
+        if (housesMap.containsKey(word)) {
+          fontColor = housesMap[word]!.fontColor;
+        }
+      });
+    }
+    return fontColor;
+  }
+}

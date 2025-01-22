@@ -45,14 +45,14 @@ class _MainViewState extends State<MainView> {
     super.initState();
   }
 
-  void getRequest() async {
+  getRequest() async {
     final response = await http.get(Uri.parse(
         "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=30"));
     if (response.statusCode == 200) {
       final List result = json.decode(response.body);
       characters = result.map((e) => Character.fromJson(e)).toList();
     } else {
-      throw Exception('Error: No se pueo recibir la información de la API.');
+      throw Exception('Error: No se pudo recibir la información de la API.');
     }
     setState(() {
       randomCharacter = getRandomCharacter();
@@ -76,9 +76,11 @@ class _MainViewState extends State<MainView> {
                   height: 200,
                   margin: const EdgeInsets.only(top: 20, bottom: 20),
                   decoration: BoxDecoration(
-                      color: Colors.green.shade200,
+                      color: randomCharacter.getHousePrimaryColor(),
                       borderRadius: BorderRadius.circular(15),
-                      border: Border.all(width: 2.5),
+                      border: Border.all(
+                          color: randomCharacter.getHouseSecondaryColor(),
+                          width: 2.5),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.4),
@@ -110,13 +112,21 @@ class _MainViewState extends State<MainView> {
                               child: Text(randomCharacter.getName(),
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
-                                  style: const TextStyle(
-                                    fontSize: 25,
-                                  )),
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color:
+                                          randomCharacter.getHouseFontColor())),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Icon(randomCharacter.getGenderIcon())],
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image(
+                                    image: AssetImage(
+                                        randomCharacter.getHouseIcon()),
+                                    width: 30,
+                                    height: 30),
+                                Icon(randomCharacter.getGenderIcon())
+                              ],
                             )
                           ])),
                 ),

@@ -1,10 +1,7 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_task/Custom%20Widgets/character_container.dart';
-import 'character.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_task/home_page.dart';
+import 'package:flutter_task/home_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const FlutterTaskApp());
@@ -16,112 +13,23 @@ class FlutterTaskApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tarea Flutter',
+      home: ChangeNotifierProvider(
+        create: (context) => HomeProvider()..getCharacters(),
+        child: const HomePage(),
+      ),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 71, 99, 194)),
+        scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      home: const MainView(title: 'Juego de Tronos'),
+      // title: 'Tarea Flutter',
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(
+      //       seedColor: const Color.fromARGB(255, 71, 99, 194)),
+      //   useMaterial3: true,
+      // ),
+      // home: ChangeNotifierProvider(
+      //   create: (context) => HomeProvider()..getCharacters(),
+      //   child: const HomePage(),
     );
   }
 }
-
-class MainView extends StatefulWidget {
-  const MainView({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MainView> createState() => _MainViewState();
-}
-
-class _MainViewState extends State<MainView> {
-  var characters = <Character>[];
-  late Character randomCharacter;
-
-  @override
-  void initState() {
-    getRequest();
-    super.initState();
-  }
-
-  getRequest() async {
-    final response = await http.get(Uri.parse(
-        "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=30"));
-    if (response.statusCode == 200) {
-      final List result = json.decode(response.body);
-      characters = result.map((e) => Character.fromJson(e)).toList();
-    } else {
-      throw Exception('Error: No se pudo recibir la información de la API.');
-    }
-    setState(() {
-      randomCharacter = getRandomCharacter();
-    });
-  }
-
-  Character getRandomCharacter() {
-    return characters[Random().nextInt(characters.length)];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: characters.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(children: <Widget>[
-                CharacterContainer(
-                  character: randomCharacter,
-                  size: 275,
-                ),
-                GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    children: List.generate(characters.length, (index) {
-                      return CharacterContainer(
-                        character: characters[index],
-                        size: 200,
-                      );
-                    }))
-              ])),
-      ),
-    );
-  }
-}
-
-//----------> Future Builder <----------
-// Future<List<Character>> getCharactersFromAPI() async {
-//   final url = Uri.parse(
-//       "https://www.anapioficeandfire.com/api/characters?page=1&pageSize=30");
-//   final response = await http.get(url);
-//   if (response.statusCode == 200) {
-//     final List result = json.decode(response.body);
-//     return characters = result.map((e) => Character.fromJson(e)).toList();
-//   } else {
-//     throw Exception('Error: No se pueo recibir la información de la API.');
-//   }
-// }
-// FutureBuilder(
-//     future: getCharactersFromAPI(),
-//     builder: (context, snapshot) {
-//       if (snapshot.hasData) {
-//         return GridView.count(
-//             crossAxisCount: 2,
-//             shrinkWrap: true,
-//             children: List.generate(characters.length, (index) {
-//               return Card(
-//                   color: Colors.blue,
-//                   child: Center(
-//                     child: Text(characters[index].gender.toString(),
-//                         style: Theme.of(context)
-//                             .textTheme
-//                             .headlineSmall),
-//                   ));
-//             }));
-//       } else if (snapshot.hasError) {
-//         return Text('${snapshot.error}');
-//       }
-//       return const CircularProgressIndicator();
-//     }),

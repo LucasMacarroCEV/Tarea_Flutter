@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_task/home_page.dart';
-import 'package:flutter_task/home_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_task/CustomWidgets/navbar_custom.dart';
 
 void main() {
   runApp(const FlutterTaskApp());
@@ -13,23 +11,13 @@ class FlutterTaskApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChangeNotifierProvider(
-        create: (context) => HomeProvider()..getCharacters(),
-        child: const HomePage(),
-      ),
+      title: "Tarea Flutter",
+      home: const CustomBotNavBar(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      // title: 'Tarea Flutter',
-      // theme: ThemeData(
-      //   colorScheme: ColorScheme.fromSeed(
-      //       seedColor: const Color.fromARGB(255, 71, 99, 194)),
-      //   useMaterial3: true,
-      // ),
-      // home: ChangeNotifierProvider(
-      //   create: (context) => HomeProvider()..getCharacters(),
-      //   child: const HomePage(),
     );
   }
 }

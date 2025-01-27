@@ -1,6 +1,6 @@
 import 'dart:math';
 
-enum HomeStatus { initial, success, error }
+enum HomeStatus { initial, loading, success, error }
 
 class HomeState<T> {
   final HomeStatus status;
@@ -27,5 +27,9 @@ class HomeState<T> {
 
   T getRandomCharacter() {
     return characters[Random().nextInt(characters.length)];
+  }
+
+  HomeStatus getStatus() {
+    return status;
   }
 }

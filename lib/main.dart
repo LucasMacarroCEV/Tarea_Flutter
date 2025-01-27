@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_task/Custom%20Widgets/character_container.dart';
 import 'character.dart';
 import 'package:http/http.dart' as http;
 
@@ -71,76 +72,18 @@ class _MainViewState extends State<MainView> {
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Column(children: <Widget>[
-                Container(
-                  width: 200,
-                  height: 200,
-                  margin: const EdgeInsets.only(top: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                      color: randomCharacter.getHousePrimaryColor(),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                          color: randomCharacter.getHouseSecondaryColor(),
-                          width: 2.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: const Offset(0, 3),
-                        )
-                      ]),
-                  child: Padding(
-                      padding: const EdgeInsets.only(
-                          right: 10, left: 10, bottom: 10),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const IconButton(
-                                    onPressed: null,
-                                    icon: Icon(Icons.star_border_outlined)),
-                                Text(randomCharacter.getNumber(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14))
-                              ],
-                            ),
-                            FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(randomCharacter.getName(),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      color:
-                                          randomCharacter.getHouseFontColor())),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Image(
-                                    image: AssetImage(
-                                        randomCharacter.getHouseIcon()),
-                                    width: 30,
-                                    height: 30),
-                                Icon(randomCharacter.getGenderIcon())
-                              ],
-                            )
-                          ])),
+                CharacterContainer(
+                  character: randomCharacter,
+                  size: 275,
                 ),
                 GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     children: List.generate(characters.length, (index) {
-                      return Card(
-                          color: Colors.blue,
-                          child: Center(
-                            child: Text(characters[index].gender.toString(),
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall),
-                          ));
+                      return CharacterContainer(
+                        character: characters[index],
+                        size: 200,
+                      );
                     }))
               ])),
       ),

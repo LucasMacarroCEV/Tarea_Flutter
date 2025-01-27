@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_task/Classes/character.dart';
+import 'package:flutter_task/Classes/model.dart';
 
 class CharacterContainer extends StatelessWidget {
   const CharacterContainer(
@@ -9,11 +9,13 @@ class CharacterContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return 
+    GestureDetector(
         onTap: () {
           print("Container clicked");
         },
-        child: Container(
+        child: 
+        Container(
           width: size,
           height: size,
           margin:
@@ -25,7 +27,7 @@ class CharacterContainer extends StatelessWidget {
                   color: character.getHouseSecondaryColor(), width: 2.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
+                  color: Colors.grey.withAlpha(85),
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: const Offset(0, 3),

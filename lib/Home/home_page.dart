@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_task/Custom%20Widgets/character_container.dart';
-import 'package:flutter_task/home_provider.dart';
-import 'package:flutter_task/home_state.dart';
+import 'package:flutter_task/CustomWidgets/character_container.dart';
+import 'package:flutter_task/Home/home_provider.dart';
+import 'package:flutter_task/Home/home_state.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scrollController = ScrollController();
-
+  
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_isBottom) {
+    if (_isBottom && context.read<HomeProvider>().homeState.status == HomeStatus.success) {
       context.read<HomeProvider>().getCharacters();
     }
   }
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.99);
+    return currentScroll == maxScroll;
   }
 
   @override
@@ -54,17 +54,17 @@ class _HomePageState extends State<HomePage> {
         }
         if (state.homeState.status == HomeStatus.success) {
           if (state.homeState.characters.isEmpty) {
-            return const Center(child: Text("No hay personajes"));
+            return const Center(child: CircularProgressIndicator());
           }
           return SafeArea(
               child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Column(children: <Widget>[
             CharacterContainer(
               character: state.homeState.getRandomCharacter(),
               size: 275,
             ),
             GridView.builder(
-                controller: _scrollController,
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

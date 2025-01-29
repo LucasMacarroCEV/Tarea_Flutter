@@ -24,11 +24,12 @@ class FavoriteSingleton {
   }
 
   static bool bInFavCharsList(Character character) {
-    if (!favCharacters.contains(character)) {
+    if (!favCharacters.any((item) => item.getNumber() == character.getNumber())) {
       return false;
     } else {
       return true;
     }
+    //!favCharacters.contains(character)
   }
 
   static void loadFavChar() {
@@ -36,12 +37,12 @@ class FavoriteSingleton {
   }
 
   static void addToFavCharList(Character character) {
-    if (!favCharacters.contains(character)) {
+    if (!favCharacters.any((item) => item.getNumber() == character.getNumber())) {
       print("NO esta en favs");
       setFavChar(List.of(favCharacters)..add(character));
     } else {
       print("esta en favs");
-      setFavChar(List.of(favCharacters)..remove(character));
+      setFavChar(List.of(favCharacters)..remove(favCharacters.firstWhere((item) => item.getNumber() == character.getNumber())));
     }
     setFavoriteCharacters();
   }

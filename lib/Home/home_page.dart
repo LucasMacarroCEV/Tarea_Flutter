@@ -41,9 +41,12 @@ class _HomePageState extends State<HomePage> {
         }
         return SafeArea(
           child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 30, top: 30),
             controller: _scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              spacing: 40,
               children: <Widget>[
                 _widgetRandomCharacter(state),
                 _widgetCharacterGridView(state),

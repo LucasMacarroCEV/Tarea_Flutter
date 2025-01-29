@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_task/Character/house.dart';
+
+import 'package:http/http.dart' as client;
 
 class Character {
   String? url, name, gender, culture, born, died, father, mother, spouse;
@@ -90,100 +94,87 @@ class Character {
   // }
 
   //---> Getters
-  String getNumber() {
-    return url?.split("/").last ?? "Error";
-    // if (url!.isNotEmpty) {
-    //   List<String>? characterUrlSplitted = url?.split("/");
-    //   return characterUrlSplitted!.last;
-    // } else {
-    //   return "Error";
-    // }
-  }
-
-  String getName() {
-    return name?.isNotEmpty ?? false ? name! : "Desconocid@";
-    // if (name!.isNotEmpty) {
-    //   return name!;
-    // } else {
-    //   return "Desconocido";
-    // }
-  }
+  String getNumber() => url?.split("/").last ?? "Error";
+  String getName() => name?.isNotEmpty ?? false ? name! : "Desconocid@";
+  String getCulture() => culture?.isNotEmpty ?? false ? culture! : "Ninguna";
+  String getBornDate() => born?.isNotEmpty ?? false ? born! : "s.f.";
+  String getDiedDate() => died?.isNotEmpty ?? false ? died! : "s.f.";
+  List<String> getTitles() => titles?.isNotEmpty ?? false ? titles! : [];
+  List<String> getAliases() => aliases?.isNotEmpty ?? false ? aliases! : [];
+  Future<String> getFatherName() async => await fetchCharacterPropertyFromAPI(father ?? "", "name");
+  Future<String> getMotherName() async => await fetchCharacterPropertyFromAPI(mother ?? "", "name");
+  Future<String> getSpouseName() async => await fetchCharacterPropertyFromAPI(spouse ?? "", "name");
+  Future<List<String>> getAllegiances() async {return await fetchCharacterPropertyListFromAPI(allegiances ?? [], "name");}
+  Future<List<String>> getBooks() async {return await fetchCharacterPropertyListFromAPI(books ?? [], "name");}
+  Future<List<String>> getPovBooks() async {return await fetchCharacterPropertyListFromAPI(povBooks ?? [], "name");}
+  //List<String> getBooks() => books?.isNotEmpty ?? false ? books! : [];
+  //List<String> getPovBooks() => povBooks?.isNotEmpty ?? false ? povBooks! : [];
+  List<String> getTvSeries() => tvSeries?.isNotEmpty ?? false ? tvSeries! : [];
+  List<String> getPlayedBy() => playedBy?.isNotEmpty ?? false ? playedBy! : [];
 
   IconData getGenderIcon() {
-    switch (gender) {
-      case "Male":
-        return Icons.male_rounded;
-      case "Female":
-        return Icons.female_rounded;
-      default:
-        return Icons.question_answer_rounded;
-    }
-    // if (gender! == "Male") {
-    //   return Icons.male_rounded;
-    // } else if (gender! == "Female") {
-    //   return Icons.female_rounded;
-    // } else {
-    //   return Icons.question_answer_rounded;
-    // }
+    return switch (gender) {
+      "Male" => Icons.male_rounded,
+      "Female" => Icons.female_rounded,
+      _ => Icons.question_answer_rounded,
+    };
   }
 
-  String getHouseIcon() {
-    if (name?.isNotEmpty ?? false) {
-      for (var word in name!.split(" ")) {
-        if (housesMap.containsKey(word)) {
-          return housesMap[word]!.icon;
-        }
+  String getHouseName() => name!.split(" ").firstWhere((word) => housesMap.containsKey(word), orElse: () => "None");
+  String getHouseIcon() => housesMap[getHouseName()]?.icon ?? "assets/icons/32px-None.png";
+  Color getHousePrimaryColor() => housesMap[getHouseName()]?.primaryColor ?? housesMap["None"]!.primaryColor;
+  Color getHouseSecondaryColor() => housesMap[getHouseName()]?.secondaryColor ?? housesMap["None"]!.secondaryColor;
+
+  //---> Flags
+  bool bHasHouse() => bHasName() && name!.split(" ").any(housesMap.containsKey);
+  bool bHasName() => name?.isNotEmpty == true;
+
+  //---> Api
+  Future<String> fetchCharacterPropertyFromAPI(String characterUrl, String value) async {
+  if (characterUrl.isEmpty) return "Desconocido";
+
+    try {
+      final response = await client.get(Uri.parse(characterUrl));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data[value] ?? "Desconocido";
+      } else {
+        return "Desconocido";
       }
+    } catch (e) {
+      return "Desconocido";
     }
-    return "assets/icons/32px-None.png";
-    // String houseIcon = "assets/icons/32px-None.png";
-    // if (name!.isNotEmpty) {
-    //   name!.split(" ").forEach((word) {
-    //     if (housesMap.containsKey(word)) {
-    //       houseIcon = housesMap[word]!.icon;
-    //     }
-    //   });
-    // }
-    // return houseIcon;
+  } 
+
+  Future<List<String>> fetchCharacterPropertyListFromAPI(List<String> characterUrls, String value) async {
+    if (characterUrls.isEmpty) return [];
+
+    try {
+      List<String> propertyList = await Future.wait(characterUrls.map((url) async {
+        final response = await client.get(Uri.parse(url));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          return data[value]?.toString() ?? "Desconocido";
+        } else {
+          return "Desconocido";
+        }
+      }));
+
+      return propertyList;
+    } catch (e) {
+      print("Error al obtener las propiedades de los personajes: $e");
+      return [];
+    }
   }
 
-  Color getHousePrimaryColor() {
-    if (name?.isNotEmpty ?? false) {
-      for (var word in name!.split(" ")) {
-        if (housesMap.containsKey(word)) {
-          return housesMap[word]!.primaryColor;
-        }
-      }
-    }
-    return housesMap["None"]!.primaryColor;
-    // Color primaryColor = housesMap["None"]!.primaryColor;
-    // if (name!.isNotEmpty) {
-    //   name!.split(" ").forEach((word) {
-    //     if (housesMap.containsKey(word)) {
-    //       primaryColor = housesMap[word]!.primaryColor;
-    //     }
-    //   });
-    // }
-    // return primaryColor;
-  }
-
-  Color getHouseSecondaryColor() {
-    if (name?.isNotEmpty ?? false) {
-      for (var word in name!.split(" ")) {
-        if (housesMap.containsKey(word)) {
-          return housesMap[word]!.secondaryColor;
-        }
-      }
-    }
-    return housesMap["None"]!.secondaryColor;
-    // Color secondaryColor = housesMap["None"]!.secondaryColor;
-    // if (name!.isNotEmpty) {
-    //   name!.split(" ").forEach((word) {
-    //     if (housesMap.containsKey(word)) {
-    //       secondaryColor = housesMap[word]!.secondaryColor;
-    //     }
-    //   });
-    // }
-    // return secondaryColor;
-  }
+  // Future<List<String>> fetchCharactersPropertyFromAPI(List<String> urls, String value) async {
+  // List<String> allies = await Future.wait(urls.map((url) async {
+  //   final response = await client.get(Uri.parse(url));
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //     return data[value] ?? "Desconocido";
+  //   } return "Desconocido";})); 
+  //   return allies;
+  // }
 }

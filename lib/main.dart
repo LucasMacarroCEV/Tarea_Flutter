@@ -14,7 +14,7 @@ class FlutterTaskApp extends StatelessWidget {
       title: "Tarea Flutter",
       home: const CustomBotNavBar(),
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Color.fromRGBO(31, 31, 31, 1.0),
         useMaterial3: true,
         primarySwatch: Colors.blue,
       ),

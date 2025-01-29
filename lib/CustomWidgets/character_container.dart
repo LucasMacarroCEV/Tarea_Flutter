@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_task/Character/model.dart';
+import 'package:flutter_task/DetailedCharacter/detailed_character_page.dart';
 import 'package:flutter_task/Favorite/favorite_handler.dart';
 
 class CharacterContainer extends StatefulWidget {
@@ -34,9 +35,6 @@ class _CharacterContainerState extends State<CharacterContainer> {
             favoriteButtonIcon = newFavoriteButtonIcon;
           });
         }
-        // setState(() {
-        //   favoriteButtonIcon = _getFavoriteButtonIcon();
-        // });
       }
     });
   }
@@ -50,9 +48,7 @@ class _CharacterContainerState extends State<CharacterContainer> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print("Container clicked");
-      },
+      onTap: _onCharacterContainerTapped,
       child: Container(
         width: size,
         height: size,
@@ -62,7 +58,7 @@ class _CharacterContainerState extends State<CharacterContainer> {
           border: Border.all(color: character.getHouseSecondaryColor(), width: 2.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withAlpha(85),
+                color: Colors.black.withAlpha(85),
                 spreadRadius: 5,
                 blurRadius: 7,
                 offset: const Offset(0, 3),
@@ -115,19 +111,11 @@ class _CharacterContainerState extends State<CharacterContainer> {
   }
 
   //---> Favorite Button
-  void _onFavoriteButtonPressed() {
-    FavoritesHandler.addToFavoriteCharacters(character);
-    // setState(() {
-    //   favIcon = _getFavoriteButtonIcon();
-    // });
-  }
+  void _onFavoriteButtonPressed() {FavoritesHandler.addToFavoriteCharacters(character);}
 
-  IconData _getFavoriteButtonIcon() {
-    return FavoritesHandler.bInFavoriteCharacters(character) ? Icons.star : Icons.star_border_outlined;
-    // if (FavoritesHandler.bInFavoriteCharacters(character)) {
-    //   return Icons.star;
-    // } else {
-    //   return Icons.star_border_outlined;
-    // }
+  IconData _getFavoriteButtonIcon() {return FavoritesHandler.bInFavoriteCharacters(character) ? Icons.star : Icons.star_border_outlined;}
+
+  void _onCharacterContainerTapped() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailedCharacterPage(character: character)));
   }
 }

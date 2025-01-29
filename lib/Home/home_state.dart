@@ -25,9 +25,13 @@ class HomeState<T> {
     );
   }
 
+  //---> Getters
   T getRandomCharacter() {
+    if (characters.isEmpty) {
+      throw Exception('La lista de personajes está vacía');
+    }
     return characters[Random().nextInt(characters.length)];
-  }
+  } 
 
   HomeStatus getStatus() {
     return status;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_task/Favorite/favorite_handler.dart';
+import 'package:flutter_task/Favorite/favorite_page.dart';
 import 'package:flutter_task/Home/home_page.dart';
 import 'package:flutter_task/Home/home_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,15 +14,26 @@ class CustomBotNavBar extends StatefulWidget {
 
 class _CustomNavBarState extends State<CustomBotNavBar> {
   int _currentIndex = 0;
-  static const TextStyle optionStyle = TextStyle(
-    fontSize: 30, fontWeight: FontWeight.bold
-  );
+
+  @override
+  void initState() {
+    super.initState();
+    FavoritesHandler.loadFavoriteCharactersFromSharedPrefs();
+  }
+
   static final List<Widget> _widgetOptions = [
     ChangeNotifierProvider(
-        create: (context) => HomeProvider()..getCharacters(),
-        child: const HomePage()),
-    const Text("Index 1: Favourites", style: optionStyle)
+      create: (context) => HomeProvider()..getCharactersFromAPI(),
+      child: const HomePage(),
+    ),
+    const FavoritePage(),
   ];
+  // static final List<Widget> _widgetOptions = [
+  //   ChangeNotifierProvider(
+  //       create: (context) => HomeProvider()..getCharacters(),
+  //       child: const HomePage()),
+  //   const FavoritePage()
+  // ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,13 +48,13 @@ class _CustomNavBarState extends State<CustomBotNavBar> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
+            icon: Icon(Icons.person),
+            label: "Personajes",
             backgroundColor: Colors.red
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: "Favourites",
+            label: "Favoritos",
             backgroundColor: Colors.green
           )
         ],

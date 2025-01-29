@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task/CustomWidgets/character_container.dart';
-import 'package:flutter_task/Favorite/favorite_singelton.dart';
 import 'package:flutter_task/Home/home_provider.dart';
 import 'package:flutter_task/Home/home_state.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +16,9 @@ class _HomePageState extends State<HomePage> {
   
   @override
   void initState() {
-    FavoriteSingleton.loadFavChar();
     super.initState();
     _scrollController.addListener(_onScroll);
+    context.read<HomeProvider>().getRandomCharacterFromAPI();
   }
 
   @override
@@ -30,9 +29,71 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Consumer<HomeProvider>(builder: (context, state, child) {
+        if (state.homeState.status == HomeStatus.initial || state.homeState.status == HomeStatus.success && state.homeState.characters.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.homeState.status == HomeStatus.error) {
+          return const Center(child: Text("Error: No se pudo obtener la información."));
+        }
+        return SafeArea(
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                _widgetRandomCharacter(state),
+                _widgetCharacterGridView(state),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  //---> GridView Builder
+  Widget _widgetCharacterGridView(HomeProvider state) {
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        // crossAxisSpacing: 10,
+        // mainAxisSpacing: 10,
+      ),
+      itemCount: state.homeState.bHasReachedMax
+          ? state.homeState.characters.length
+          : state.homeState.characters.length + 1,
+      itemBuilder: (context, index) {
+        if (index >= state.homeState.characters.length) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Center(
+          child: CharacterContainer(
+            character: state.homeState.characters[index],
+            size: 230,
+          ),
+        );
+      },
+    );
+  }
+
+  //---> Random Character
+  Widget _widgetRandomCharacter(HomeProvider state) {
+    return state.randomCharacter != null ? CharacterContainer(
+          character: state.randomCharacter!,
+          size: 330,
+    ) 
+    : const CircularProgressIndicator();
+  }
+
+  //---> Scroll Controller
   void _onScroll() {
     if (_isBottom && context.read<HomeProvider>().homeState.status == HomeStatus.success) {
-      context.read<HomeProvider>().getCharacters();
+      context.read<HomeProvider>().getCharactersFromAPI();
     }
   }
 
@@ -41,53 +102,5 @@ class _HomePageState extends State<HomePage> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
     return currentScroll == maxScroll;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<HomeProvider>(builder: (context, state, child) {
-        if (state.homeState.status == HomeStatus.initial) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state.homeState.status == HomeStatus.error) {
-          return const Center(
-              child: Text("Error: No se pudo obtener la información."));
-        }
-        if (state.homeState.status == HomeStatus.success) {
-          if (state.homeState.characters.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return SafeArea(
-              child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(children: <Widget>[
-            CharacterContainer(
-              character: state.homeState.getRandomCharacter(),
-              size: 275,
-            ),
-            GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemCount: state.homeState.bHasReachedMax
-                    ? state.homeState.characters.length
-                    : state.homeState.characters.length + 1,
-                itemBuilder: (context, index) {
-                  return index >= state.homeState.characters.length
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : CharacterContainer(
-                          character: state.homeState.characters[index],
-                          size: 200,
-                        );
-                }),
-          ])));
-        }
-        return const Center(child: CircularProgressIndicator());
-      }),
-    );
   }
 }

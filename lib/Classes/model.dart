@@ -49,26 +49,44 @@ class Character {
     playedBy = json['playedBy'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['url'] = url;
-    data['name'] = name;
-    data['gender'] = gender;
-    data['culture'] = culture;
-    data['born'] = born;
-    data['died'] = died;
-    data['titles'] = titles;
-    data['aliases'] = aliases;
-    data['father'] = father;
-    data['mother'] = mother;
-    data['spouse'] = spouse;
-    data['allegiances'] = allegiances;
-    data['books'] = books;
-    data['povBooks'] = povBooks;
-    data['tvSeries'] = tvSeries;
-    data['playedBy'] = playedBy;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    'url': url,
+    'name': name,
+    'gender': gender,
+    'culture': culture,
+    'born': born,
+    'died': died,
+    'titles': titles,
+    'aliases': aliases,
+    'father': father,
+    'mother': mother,
+    'spouse': spouse,
+    'allegiances': allegiances,
+    'books': books,
+    'povBooks': povBooks,
+    'tvSeries': tvSeries,
+    'playedBy': playedBy
+  };
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = <String, dynamic>{};
+  //   data['url'] = url;
+  //   data['name'] = name;
+  //   data['gender'] = gender;
+  //   data['culture'] = culture;
+  //   data['born'] = born;
+  //   data['died'] = died;
+  //   data['titles'] = titles;
+  //   data['aliases'] = aliases;
+  //   data['father'] = father;
+  //   data['mother'] = mother;
+  //   data['spouse'] = spouse;
+  //   data['allegiances'] = allegiances;
+  //   data['books'] = books;
+  //   data['povBooks'] = povBooks;
+  //   data['tvSeries'] = tvSeries;
+  //   data['playedBy'] = playedBy;
+  //   return data;
+  // }
 
   String getNumber() {
     if (url!.isNotEmpty) {

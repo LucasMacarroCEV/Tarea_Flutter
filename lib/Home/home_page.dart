@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task/CustomWidgets/character_container.dart';
+import 'package:flutter_task/Favorite/favorite_singelton.dart';
 import 'package:flutter_task/Home/home_provider.dart';
 import 'package:flutter_task/Home/home_state.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   
   @override
   void initState() {
+    FavoriteSingleton.loadFavChar();
     super.initState();
     _scrollController.addListener(_onScroll);
   }

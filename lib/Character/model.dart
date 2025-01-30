@@ -107,8 +107,6 @@ class Character {
   Future<List<String>> getAllegiances() async {return await fetchCharacterPropertyListFromAPI(allegiances ?? [], "name");}
   Future<List<String>> getBooks() async {return await fetchCharacterPropertyListFromAPI(books ?? [], "name");}
   Future<List<String>> getPovBooks() async {return await fetchCharacterPropertyListFromAPI(povBooks ?? [], "name");}
-  //List<String> getBooks() => books?.isNotEmpty ?? false ? books! : [];
-  //List<String> getPovBooks() => povBooks?.isNotEmpty ?? false ? povBooks! : [];
   List<String> getTvSeries() => tvSeries?.isNotEmpty ?? false ? tvSeries! : [];
   List<String> getPlayedBy() => playedBy?.isNotEmpty ?? false ? playedBy! : [];
 
@@ -167,14 +165,4 @@ class Character {
       return [];
     }
   }
-
-  // Future<List<String>> fetchCharactersPropertyFromAPI(List<String> urls, String value) async {
-  // List<String> allies = await Future.wait(urls.map((url) async {
-  //   final response = await client.get(Uri.parse(url));
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     return data[value] ?? "Desconocido";
-  //   } return "Desconocido";})); 
-  //   return allies;
-  // }
 }

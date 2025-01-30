@@ -72,14 +72,6 @@ class FavoritesHandler{
     } catch (e) {
       print("Error al cargar favoritos: $e");
     }
-
-    // final prefs = await SharedPreferences.getInstance();
-    // if (prefs.containsKey('favorites')) {
-    //   final List result = await json.decode(prefs.getString('favorites')!);
-    //   final favoriteCharactersList = result.map((e) => Character.fromJson(e)).toList();
-    //   setFavoriteCharacters(favoriteCharactersList);
-    //   print("favChars cargados - ${_favoriteCharacters.map((i) => i.name)}");
-    // } else {saveFavoriteCharactersToSharePrefs();}
   }
 
   static Future<void> saveFavoriteCharactersToSharePrefs() async {
@@ -91,10 +83,5 @@ class FavoritesHandler{
     } catch (e) {
       print("Error al guardar favoritos: $e");
     }
-    
-    // final prefs = await SharedPreferences.getInstance();
-    // final favJson = _favoriteCharacters.map((e) => e.toJson()).toList();
-    // await prefs.setString('favorites', jsonEncode(favJson));
-    // print("favChars guardados - ${_favoriteCharacters.map((i) => i.name)}");
   }
 }

@@ -23,7 +23,6 @@ class _FavoritePageState extends State<FavoritePage> {
         setState(() {});
       }
     });
-    //_subscription = FavoritesHandler.stream.listen((updatedList) {setState(() {});});
   }
 
   @override
@@ -39,11 +38,8 @@ class _FavoritePageState extends State<FavoritePage> {
     return Scaffold(
       body: GridView.builder(
         shrinkWrap: true,
-        //padding: const EdgeInsets.all(10),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          // crossAxisSpacing: 10,
-          // mainAxisSpacing: 10,
         ),
         itemCount: favoriteCharacters.length,
         itemBuilder: (context, index) {
